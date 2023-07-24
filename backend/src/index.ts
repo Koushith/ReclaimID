@@ -2,14 +2,10 @@ import express, { Request, Response } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 
-import {
-  getStatus,
-  initSession,
-  responseFromReclaimWallet,
-} from "./controllers/reclaim.controller.js";
 import { connectToDB } from "./utils/db.config.js";
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 import { asyncHandler } from "./middlewares/asyncHandler.js";
+import { getStatus, initSession } from "./controllers/init-session.js";
 
 dotenv.config();
 const app = express();
@@ -26,10 +22,10 @@ app.get("/verify/status/:id", getStatus);
 
 //React Native
 app.use(express.text({ type: "*/*" }));
-app.post("/callback/:callbackId", responseFromReclaimWallet);
+//app.post("/callback/:callbackId", responseFromReclaimWallet);
 
 app.get("/", (req, res) => {
-  res.send("This route works!!");
+  res.send("This route works!!!!!!!!");
 });
 
 // custom middleware
