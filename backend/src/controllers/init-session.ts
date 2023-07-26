@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler";
 
-import { reclaimprotocol } from "@reclaimprotocol/reclaim-sdk";
+import { Proof, reclaimprotocol } from "@reclaimprotocol/reclaim-sdk";
 import { user } from "../models/user";
 
 //initilize the session
@@ -12,35 +12,51 @@ console.log("callback url----", callbackUrl);
 
 export const initSession = async (req: Request, res: Response) => {
   console.log("request was here--- new one");
-
+  console.log("Reclaim idddddd", req.body.tempReclaimId);
   try {
-    console.log("start---------------------");
-    const request = reclaim.requestProofs({
-      title: "Verify with Aadar",
-      baseCallbackUrl: callbackUrl,
-      requestedProofs: [
-        new reclaim.CustomProvider({
-          provider: "uidai-aadhar",
-          payload: {},
-        }),
-      ],
-    });
-    console.log("before-------------");
-    const reclaimUrl = await request.getReclaimUrl();
-    const { callbackId } = request;
-    console.log("after-------------");
-
-    const record = await user.create({
-      callbackId: callbackId,
-      callbackUrl: reclaimUrl,
-      status: "PENDING",
+    const isReclaimIdExist = await user.findOne({
+      reclaimId: req.body.tempReclaimId,
     });
 
-    if (record) {
-      res.status(200).json({
-        callbackId: record.callbackId,
-        callbackUrl: record.callbackUrl,
+    console.log(isReclaimIdExist);
+
+    if (isReclaimIdExist?.reclaimId === req.body.tempReclaimId) {
+      res.json({
+        code: "TAKEN",
+        message: "This ID already taken. please try with diffrent one",
       });
+      throw new Error("This ID already taken. please try with diffrent one");
+      return;
+    } else {
+      console.log("start---------------------");
+      const request = reclaim.requestProofs({
+        title: "Verify with Aadar",
+        baseCallbackUrl: callbackUrl,
+        requestedProofs: [
+          new reclaim.CustomProvider({
+            provider: "uidai-aadhar",
+            payload: {},
+          }),
+        ],
+      });
+      console.log("before-------------");
+      const reclaimUrl = await request.getReclaimUrl();
+      const { callbackId } = request;
+      console.log("after-------------");
+
+      const record = await user.create({
+        callbackId: callbackId,
+        callbackUrl: reclaimUrl,
+        reclaimId: req.body.tempReclaimId,
+        status: "PENDING",
+      });
+
+      if (record) {
+        res.status(200).json({
+          callbackId: record.callbackId,
+          callbackUrl: record.callbackUrl,
+        });
+      }
     }
   } catch (error: any) {
     console.log("something went wrong", error);
@@ -51,18 +67,41 @@ export const initSession = async (req: Request, res: Response) => {
 
 export const verifyTheProof = asyncHandler(
   async (req: Request, res: Response) => {
-    const id = req.params.id;
+    if (!req.params.callbackId) {
+      res.status(400).send(`400 - Bad Request: callbackId is required`);
+      return;
+    }
 
-    console.log("id---", id);
+    if (!req.body) {
+      res.status(400).send(`400 - Bad Request: body is required`);
+      return;
+    }
 
-    const query = await user.findOne({ callbackId: id });
-    console.log("query----", query);
-    if (query) {
-      res.status(200).json({
-        status: query.status,
-      });
+    let reqBody: any;
+
+    reqBody = JSON.parse(decodeURIComponent(req.body));
+
+    if (!reqBody.proofs || !reqBody.proofs.length) {
+      res.status(400).send(`400 - Bad Request: proofs are required`);
+      return;
+    }
+
+    const callbackId = req.params.callbackId;
+    const proofs = reqBody.proofs as Proof[];
+
+    console.log("proofs array", proofs);
+    console.log("callback id", callbackId);
+
+    // verify the proof
+    const isValidProofs = await reclaim.getOnChainClaimIdsFromProofs(proofs);
+
+    console.log("is valid proof-----", isValidProofs);
+
+    if (isValidProofs) {
+      res.json({ success: true });
     } else {
-      throw new Error("No Record found!!");
+      res.status(400).json({ success: false });
+      console.log("Proof verification failed");
     }
   }
 );
@@ -79,6 +118,23 @@ export const getStatus = asyncHandler(async (req: Request, res: Response) => {
     res.status(200).json({
       callbakId: query.callbackId,
       status: query.status,
+    });
+  } else {
+    throw new Error("No Record found!!");
+  }
+});
+
+// get the status for FE
+export const getUserById = asyncHandler(async (req: Request, res: Response) => {
+  const id = req.params.id;
+
+  console.log("id---", id);
+
+  const query = await user.findOne({ reclaimId: id });
+  console.log("query-------", query);
+  if (query) {
+    res.status(200).json({
+      query,
     });
   } else {
     throw new Error("No Record found!!");

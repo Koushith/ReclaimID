@@ -16,6 +16,7 @@ export const VerifyScreen = () => {
   const [status, setStatus] = useState("");
 
   const checkout = () => {
+    prompt("You will be charged 10$", "10");
     let paymentStatus = "paid";
     return paymentStatus;
   };
@@ -34,10 +35,11 @@ export const VerifyScreen = () => {
           let paymentStatus = checkout();
 
           if (paymentStatus === "paid") {
-            navigate("/profile", {
+            navigate(`/profile/${state?.tempReclaimId}`, {
               state: {
                 name: "koushith",
                 isVerified: true,
+                reclaimName: state?.tempReclaimId,
               },
             });
           }
@@ -48,11 +50,6 @@ export const VerifyScreen = () => {
     }
   };
 
-  //check the status every 3 sec
-  // if proved, proceed to payment
-  // keyid rzp_test_cxokgq1hEQcypq
-
-  //key sec urW0OyWCvNlQR9BMuRPDJDgy
   console.log("what is in??", state);
 
   useEffect(() => {
@@ -66,11 +63,11 @@ export const VerifyScreen = () => {
   }, [state]);
   return (
     <VerifyContainer>
-      {/* <QRCcodeContainer>
-        <QRCodeSVG value={state?.reclaimUrl} />
-      </QRCcodeContainer> */}
       <QRCcodeContainer>
-        <h1 className="title">Almost there. Lets get Verified!!</h1>
+        <h1 className="title">
+          Almost there. Lets get Verified!! <br /> and {state.tempReclaimId}
+          .reclaim will be yours.
+        </h1>
 
         <a
           className="link"

@@ -5,7 +5,12 @@ import cors from "cors";
 import { connectToDB } from "./utils/db.config.js";
 import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 import { asyncHandler } from "./middlewares/asyncHandler.js";
-import { getStatus, initSession } from "./controllers/init-session.js";
+import {
+  getStatus,
+  getUserById,
+  initSession,
+  verifyTheProof,
+} from "./controllers/init-session.js";
 
 dotenv.config();
 const app = express();
@@ -16,13 +21,12 @@ app.use(cors());
 app.use(express.json()); // body parser- parse JSON
 
 //Reclaim
-
 app.post("/verify/init", initSession);
 app.get("/verify/status/:id", getStatus);
-
+app.get("/user/:id", getUserById);
 //React Native
 app.use(express.text({ type: "*/*" }));
-//app.post("/callback/:callbackId", responseFromReclaimWallet);
+app.post("/callback/:callbackId", verifyTheProof);
 
 app.get("/", (req, res) => {
   res.send("This route works!!!!!!!!");

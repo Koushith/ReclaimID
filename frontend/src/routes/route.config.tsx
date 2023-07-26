@@ -13,7 +13,7 @@ export const routerConfig = createBrowserRouter([
         element: <HomeScreen />,
       },
       {
-        path: "/profile",
+        path: "/profile/:id",
         element: <ProfileScreen />,
       },
       {

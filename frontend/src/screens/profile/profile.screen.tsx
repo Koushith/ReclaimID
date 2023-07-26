@@ -5,10 +5,29 @@ import { ProfileImageContainer, ProjectsContainer } from "./profile.styles";
 import { Container } from "../../components";
 //@ts-ignore
 import CheckIcon from "../../assets/icons/check.svg";
+import { useLocation, useParams } from "react-router-dom";
 
 export const ProfileScreen = () => {
-  const [githubRepos, setGithubRepos] = useState([]);
+  const [userName, setUserName] = useState("");
   const [isFetching, setIsFetching] = useState(false);
+  const location = useLocation();
+  const { id } = useParams();
+
+  console.log("id", id);
+
+  const fetchUser = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:8000/user/${id}`);
+      setUserName(data.query.reclaimId);
+      console.log(data.query.reclaimId);
+    } catch (error) {
+      console.log("somethinmg went wrong", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, [id, location]);
 
   return (
     <Container>
@@ -58,7 +77,7 @@ export const ProfileScreen = () => {
         </div>
 
         <div className="profile-meta">
-          <p className="name">Koushith.reclaim</p>
+          <p className="name">{userName}.reclaim</p>
 
           <div className="follow-info"></div>
         </div>

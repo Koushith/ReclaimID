@@ -38,6 +38,7 @@ export const HomeContainer = styled.div`
       }
       button {
         font-size: 1.5rem;
+        cursor: pointer;
         padding: 0.8rem 1rem;
         font-weight: 600;
         border-radius: 4px;

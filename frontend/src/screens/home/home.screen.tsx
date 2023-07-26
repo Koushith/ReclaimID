@@ -13,12 +13,10 @@ export const HomeScreen = () => {
 
   const checkIfIdExist = async () => {
     try {
-      const { data } = await axios.post(
-        "http://192.168.68.109:8000/verify/init",
-        {
-          tempReclaimId,
-        }
-      );
+      console.log("clicled");
+      const { data } = await axios.post("http://localhost:8000/verify/init", {
+        tempReclaimId,
+      });
       console.log("data------", data);
       if (data.code === "TAKEN") {
         setIsIdExist(true);
@@ -33,6 +31,7 @@ export const HomeScreen = () => {
           state: {
             callbackId: data.callbackId,
             reclaimUrl: data.callbackUrl,
+            tempReclaimId: tempReclaimId,
           },
         });
       }
