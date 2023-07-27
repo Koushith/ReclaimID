@@ -1,6 +1,6 @@
-# GitHub-verifed-on-Lens
-Get a verified check mark on your lens profile if you have contributed to any OSS Projects
+# ReclaimID
 
+Get a verified check mark on your lens profile if you have contributed to any OSS Projects
 
 # Local Installation Guide
 
@@ -61,15 +61,6 @@ npm start
 
 This Application is Powered by Reclaim Protocol. To know more check this link - https://docs.reclaimprotocol.org/
 
-
 ### Screenshots
 
-![image](https://github.com/Koushith/GitHub-verifed-on-Lens/assets/30016242/d11ce87c-73f9-47fc-90a6-4123e73010b3)
-![image](https://github.com/Koushith/GitHub-verifed-on-Lens/assets/30016242/06127719-f4b5-4698-878e-816bf997a810)
-![image](https://github.com/Koushith/GitHub-verifed-on-Lens/assets/30016242/59aa2445-3920-44e4-ab41-1ed4cf6d7a66)
-![image](https://github.com/Koushith/GitHub-verifed-on-Lens/assets/30016242/155341c6-65cc-467a-a6bd-8187d100761a)
-![image](https://github.com/Koushith/GitHub-verifed-on-Lens/assets/30016242/4746cff2-9291-420e-9e96-607a1dc17c87)
-![image](https://github.com/Koushith/GitHub-verifed-on-Lens/assets/30016242/f748bdc4-322f-4513-a552-e45a73f2df1a)
-
-https://www.loom.com/share/2c03858dff1e4f7783a7992ec42b2442?sid=b0ef48a4-0449-496e-9904-c32069b13b9a
 # ReclaimID
