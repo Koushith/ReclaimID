@@ -1,6 +1,6 @@
 # ReclaimID
 
-Get a verified check mark on your lens profile if you have contributed to any OSS Projects
+Secure your .reclaim ID now and connect it with essential details like your wallet address, current company, GitHub profile, and more. Utilize the Explore page to easily find and connect with others who also possess a .reclaim ID.
 
 # Local Installation Guide
 
@@ -62,5 +62,10 @@ npm start
 This Application is Powered by Reclaim Protocol. To know more check this link - https://docs.reclaimprotocol.org/
 
 ### Screenshots
+
+![image](https://github.com/Koushith/ReclaimID/assets/30016242/ef31bb5b-00f1-48e8-ad12-cec36425bb96)
+![image](https://github.com/Koushith/ReclaimID/assets/30016242/378a5440-15fa-445d-8bbb-c227cf85b948)
+![image](https://github.com/Koushith/ReclaimID/assets/30016242/8ad7b968-acf7-42ff-b21b-be0630cb4a8d)
+
 
 # ReclaimID
