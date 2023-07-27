@@ -1,10 +1,9 @@
-import express, { Request, Response } from "express";
-import { asyncHandler } from "../middlewares/asyncHandler";
-
 import { Proof, reclaimprotocol } from "@reclaimprotocol/reclaim-sdk";
-import { user } from "../models/user";
 
-//initilize the session
+import express, { Request, Response } from "express";
+
+import { asyncHandler } from "../middlewares/asyncHandler";
+import { user } from "../models/user";
 
 const reclaim = new reclaimprotocol.Reclaim();
 const callbackUrl = "http://192.168.68.109:8000";
@@ -30,11 +29,16 @@ export const initSession = async (req: Request, res: Response) => {
     } else {
       console.log("start---------------------");
       const request = reclaim.requestProofs({
-        title: "Verify with Aadar",
+        title: "Link other Platforms",
         baseCallbackUrl: callbackUrl,
         requestedProofs: [
           new reclaim.CustomProvider({
             provider: "uidai-aadhar",
+            payload: {},
+          }),
+
+          new reclaim.CustomProvider({
+            provider: "google-login",
             payload: {},
           }),
         ],
@@ -93,11 +97,15 @@ export const verifyTheProof = asyncHandler(
     console.log("callback id", callbackId);
 
     // verify the proof
-    const isValidProofs = await reclaim.getOnChainClaimIdsFromProofs(proofs);
-
-    console.log("is valid proof-----", isValidProofs);
+    const isValidProofs = reclaim.getOnChainClaimIdsFromProofs(proofs);
 
     if (isValidProofs) {
+      await user.findByIdAndUpdate(
+        { callbackId },
+        {
+          status: "VERIFIED",
+        }
+      );
       res.json({ success: true });
     } else {
       res.status(400).json({ success: false });
